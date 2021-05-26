@@ -77,6 +77,15 @@ public class Game extends javax.swing.JFrame {
             jLabel1.setLocation(horizontal+1,vertical);
         }
         }
+        //if space key pressed generate ball where unicorn is
+        else if (evt.getKeyCode()==evt.VK_SPACE){
+            Ball.setLocation (horizontal, vertical+10);
+            Ball.setVisible(true);
+            //not working (need timer?)
+            while (findBallY>350){
+                Ball.setLocation (horizontal,findBallY+5);
+            }
+        }
        // else if (evt.getKeyCode()==evt.VK_UP){
         //    jLabel1.setLocation(horizontal,vertical+10);
       // }  
