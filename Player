@@ -61,10 +61,12 @@ public class Game extends javax.swing.JFrame {
         
     }                                  
 
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {                                
+      private void formKeyPressed(java.awt.event.KeyEvent evt) {                                
 
         int horizontal = jLabel1.getX();
         int vertical= jLabel1.getY();
+        int findBallY= Ball.getY();
+        int findBallX=Ball.getX();
         if (evt.getKeyCode()==evt.VK_LEFT){
             //if the left arrow key is pressed
             if (horizontal>0){
@@ -73,23 +75,23 @@ public class Game extends javax.swing.JFrame {
         }
         else if (evt.getKeyCode()==evt.VK_RIGHT){
             //if the right arrow key is pressed
-            if (horizontal<590){
+            if (horizontal<540){
             jLabel1.setLocation(horizontal+1,vertical);
         }
         }
-        //if space key pressed generate ball where unicorn is
         else if (evt.getKeyCode()==evt.VK_SPACE){
-            Ball.setLocation (horizontal, vertical+10);
-            Ball.setVisible(true);
-            //not working (need timer?)
-            while (findBallY>350){
-                Ball.setLocation (horizontal,findBallY+5);
-            }
+            Ball.setLocation (horizontal, vertical);
         }
-       // else if (evt.getKeyCode()==evt.VK_UP){
-        //    jLabel1.setLocation(horizontal,vertical+10);
-      // }  
     }                               
+
+    private void formKeyReleased(java.awt.event.KeyEvent evt) {                                 
+        int findBallY= Ball.getY();
+        int findBallX=Ball.getX();
+        if (evt.getKeyCode()==evt.VK_SPACE){
+            Ball.setVisible(true);
+            Ball.setLocation (findBallX,findBallY+5); 
+     }
+    }                                
 
     /**
      * @param args the command line arguments
