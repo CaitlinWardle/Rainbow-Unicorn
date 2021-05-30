@@ -23,7 +23,7 @@ public class Board  extends JPanel implements Runnable, MouseListener
 {
 boolean ingame = true;
 private Dimension d;
-int BOARD_WIDTH=800;
+int BOARD_WIDTH=1000;
 int BOARD_HEIGHT=500;
 int x = 0;
 BufferedImage unicornpic; //picture of playable character
@@ -32,7 +32,7 @@ BufferedImage ball;  //ball fired when player shoots
 private Thread animator;
 Player user;// creating users with actions
 shot shooting;
-Enemy [] army = new Enemy[30]; //creating enemy army of 10
+Enemy [] army = new Enemy[24]; //creating enemy army of 24
  
     public Board()
     {
@@ -47,13 +47,13 @@ Enemy [] army = new Enemy[30]; //creating enemy army of 10
         int enemyY=10;
         for (int i=0; i<army.length; i++){
           army[i]= new Enemy (enemyX,enemyY,10);
-          enemyX+=40; //creating row of enemy 40 untis apart from each other
-          if (i==14){ //new row after 15 enemy sad faces
-              enemyX=10; //set starting enemy back to original x position
+          enemyX+=50; //creating row of enemy 50 untis apart from each other
+          if (i==11){ //new row after 12 enemy sad faces
+              enemyX=40; //set starting enemy back to original x position
               enemyY+=40; 
-          }
-          
+          }      
     }
+        //set up all needed images
         try{
             unicornpic=ImageIO.read(this.getClass().getResource ("unicorn.png"));
         }
@@ -90,14 +90,22 @@ public void paint(Graphics g){
 super.paint(g);
 
 g.setColor(Color.white);
-g.fillRect(0, 0, d.width, d.height);
+g.fillRect(0, 0, d.width, d.height); //set background colour to white
 
 //player
-g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over p (visual of player) 
+g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over user (visual of player) 
 g.drawImage(ball,shooting.x,shooting.y,10,10,null); 
 if (shooting.fired==true){
-       shooting.y-=10;
-   } 
+       shooting.y-=10; 
+       for (int i=0; i<army.length; i++){
+       if (army[i].x<=shooting.x&& shooting.x<=army[i].x+30&& army[i].y<=shooting.y && shooting.y<=army[i].y){
+        army[i].alive=false;
+        shooting.y=800;
+        shooting.x=900;  //set the ball to be invisable (off of visible screen) 
+        shooting.fired=false; 
+       }
+       }
+    }
 if (user.moveRight==true){
     user.x+=user.speed;
 }
@@ -105,7 +113,7 @@ if (user.moveLeft==true){
     user.x-=user.speed; 
 }
 //keeps player on board 
-if (user.x>740){
+if (user.x>940){
        user.x-=user.speed;
          }
 if (user.x<0){
@@ -113,7 +121,9 @@ if (user.x<0){
 }
 moveEnemy(); 
 for (int i=0; i<army.length; i++){
-    g.drawImage (sadpic, army[i].x, army[i].y, 30, 30,null);
+    if (army[i].alive==true){
+        g.drawImage (sadpic, army[i].x, army[i].y, 30, 30,null);   
+       }
 }
     if (ingame) {
        
@@ -205,4 +215,5 @@ beforeTime = System.currentTimeMillis();
 }//end of class
 
          
+  
   
