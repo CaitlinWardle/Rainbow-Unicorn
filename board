@@ -1,10 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package summative;
-
 import java.awt.event.MouseListener;
 import java.awt.event.MouseEvent;
 import java.awt.Color;
@@ -12,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -20,114 +13,110 @@ import javax.swing.Timer;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-
-import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
-import javax.swing.JLabel;
-
+//importing all libraries needed
 
 public class Board  extends JPanel implements Runnable, MouseListener
 {
 boolean ingame = true;
 private Dimension d;
-int BOARD_WIDTH=500;
+int BOARD_WIDTH=800;
 int BOARD_HEIGHT=500;
 int x = 0;
-BufferedImage img;
-String message = "Click Board to Start";
+BufferedImage unicornpic; //picture of playable character
+BufferedImage sadpic;  //enemy sadaces
+BufferedImage ball;  //ball fired when player shoots
 private Thread animator;
-Player p;
-Enemy [] army = new Enemy[10];
+Player user;// creating users with actions
+shot shooting;
+Enemy [] army = new Enemy[30]; //creating enemy army of 10
  
     public Board()
     {
-          addKeyListener(new TAdapter());
-         addMouseListener(this);
+        addKeyListener(new TAdapter());
+        addMouseListener(this);
         setFocusable(true);
         d = new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
         setBackground(Color.black);
-        p= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-60,5);
+        user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5);
+        shooting=new shot (user.x,BOARD_HEIGHT-100,5); 
         int enemyX=10;
         int enemyY=10;
         for (int i=0; i<army.length; i++){
           army[i]= new Enemy (enemyX,enemyY,10);
           enemyX+=40; //creating row of enemy 40 untis apart from each other
-          if (i==4){ //new row after 5 enemy sad faces
+          if (i==14){ //new row after 15 enemy sad faces
               enemyX=10; //set starting enemy back to original x position
               enemyY+=40; 
           }
           
     }
-       
-           /*         
-             try {
-                img = ImageIO.read(this.getClass().getResource("mount.jpg"));
-            } catch (IOException e) {
-                 System.out.println("Image could not be read");
-            // System.exit(1);
-            }
-            */
+        try{
+            unicornpic=ImageIO.read(this.getClass().getResource ("unicorn.png"));
+        }
+        catch (IOException e){
+            System.out.println ("Unreadable image");
+        }
             if (animator == null || !ingame) {
             animator = new Thread(this);
             animator.start();
             }
-                    
-  
+        try{
+            sadpic=ImageIO.read(this.getClass().getResource ("Sad.png"));
+        }
+        catch (IOException e){
+            System.out.println ("Unreadable image");
+        }
+            if (animator == null || !ingame) {
+            animator = new Thread(this);
+            animator.start();
+            }
+         try{
+            ball=ImageIO.read(this.getClass().getResource ("ball.jpg"));
+        }
+        catch (IOException e){
+            System.out.println ("Unreadable image");
+        }
+            if (animator == null || !ingame) {
+            animator = new Thread(this);
+            animator.start();
+            }
         setDoubleBuffered(true);
     }
-    
-    public void paint(Graphics g)
-{
+public void paint(Graphics g){
 super.paint(g);
 
 g.setColor(Color.white);
 g.fillRect(0, 0, d.width, d.height);
-//g.fillOval(x,y,r,r);
 
 //player
-g.setColor(Color.red);
-g.fillRect(p.x, p.y, 20, 20);
-/*ImageIcon magic = new ImageIcon (this.getClass().getResource("unicorn.png"));
-JLabel unicorn = new JLabel(magic);
-unicorn.setBounds( p.x,p.y,20,20);*/
-if (p.moveRight==true){
-    p.x+=p.speed;
+g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over p (visual of player) 
+g.drawImage(ball,shooting.x,shooting.y,10,10,null); 
+if (shooting.fired==true){
+       shooting.y-=10;
+   } 
+if (user.moveRight==true){
+    user.x+=user.speed;
 }
-if (p.moveLeft==true){ 
-    p.x-=p.speed; 
+if (user.moveLeft==true){ 
+    user.x-=user.speed; 
 }
-//pushes you back onto bord if you try to leave it
-if (p.x>BOARD_WIDTH){
-        p.moveLeft=true;
-        p.moveRight=false; 
+//keeps player on board 
+if (user.x>740){
+       user.x-=user.speed;
          }
-if (p.x<0){
-    p.moveLeft=false;
-    p.moveRight=true;  
+if (user.x<0){
+     user.x+=user.speed;
 }
 moveEnemy(); 
 for (int i=0; i<army.length; i++){
-    g.fillRect(army[i].x, army[i].y, 30, 30);
+    g.drawImage (sadpic, army[i].x, army[i].y, 30, 30,null);
 }
-        Font small = new Font("Helvetica", Font.BOLD, 14);
-        FontMetrics metr = this.getFontMetrics(small);
-        g.setColor(Color.black);
-       g.setFont(small);
-        g.drawString(message, 10, d.height-60);
-
     if (ingame) {
-        
-    
-        
        
-        
-    // g.drawImage(img,0,0,200,200 ,null);
-     
-    
-   
     }
 Toolkit.getDefaultToolkit().sync();
 g.dispose();
@@ -156,62 +145,44 @@ public void moveEnemy(){
         army[n].y+=5;
          }
     }
-    //army[i].y+=army[i].speed;
 }
 }
 private class TAdapter extends KeyAdapter {
-
 public void keyReleased(KeyEvent e) {
      int key = e.getKeyCode();
-     p.moveRight=false;
-     p.moveLeft=false; 
-     
+     user.moveRight=false;
+     user.moveLeft=false;     
 }
-
 public void keyPressed(KeyEvent e) {
-//System.out.println( e.getKeyCode());
-   // message = "Key Pressed: " + e.getKeyCode();
-    int key = e.getKeyCode();
-        if(key==39){
-          p.moveRight=true; 
-        }
-        else{
-            p.moveRight=false;
+    int key = e.getKeyCode(); //find the key that was pressed
+        if(key==39){//when right arrow key is pressed
+          user.moveRight=true; 
         }
         if (key==37){
-          p.moveLeft=true; 
+          user.moveLeft=true; //when left arrow key is pressed
+        }
+        if (key==32){
+          shooting.y=BOARD_HEIGHT-100;
+          shooting.x=user.x; 
+          shooting.fired=true; //when space key pressed fire shot
         }
 }   
-
 }
-
-
-
-
 public void mousePressed(MouseEvent e) {
     int x = e.getX();
      int y = e.getY();
-
 }
-
 public void mouseReleased(MouseEvent e) {
-
 }
-
 public void mouseEntered(MouseEvent e) {
-
 }
 
 public void mouseExited(MouseEvent e) {
-
 }
-
 public void mouseClicked(MouseEvent e) {
 
 }
-
 public void run() {
-
 long beforeTime, timeDiff, sleep;
 
 beforeTime = System.currentTimeMillis();
@@ -229,10 +200,9 @@ beforeTime = System.currentTimeMillis();
         System.out.println(e);
       }//end catch
     }//end while loop
-
-    
-
-
 }//end of run
 
 }//end of class
+
+         
+  
