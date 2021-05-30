@@ -1,0 +1,9 @@
+
+public class tear extends Character {
+   boolean dropped;
+    public tear(int x, int y, int speed) {
+        super(x, y, speed);
+        dropped= false; 
+    }
+    
+}
