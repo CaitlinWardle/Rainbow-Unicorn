@@ -1,0 +1,21 @@
+package summative;
+   
+import javax.swing.JFrame;
+
+public class CallScreen extends JFrame {
+
+    public CallScreen()
+    {
+        add(new Board());
+        setTitle("Rainbow Unicorn Battle");
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setSize(1000,500);
+        setLocationRelativeTo(null);
+        setVisible(true);
+        setResizable(false);
+    }
+
+    public static void main(String[] args) {
+        new CallScreen();
+    }
+}
