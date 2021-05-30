@@ -1,0 +1,11 @@
+public class shot extends Character {
+    boolean fired;
+    boolean inRange;
+    public shot(int x, int y, int speed) {
+        super(x, y, speed);
+        fired=false;
+        inRange=false;
+    }
+    
+}
+ 
