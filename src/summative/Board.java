@@ -21,11 +21,14 @@ import java.io.*;
 
 public class Board  extends JPanel implements Runnable, MouseListener
 {
+int lives= 3;
+int score=0;
 boolean ingame = true;
 private Dimension d;
 int BOARD_WIDTH=1000;
 int BOARD_HEIGHT=500;
 int x = 0;
+int enemyY;
 BufferedImage unicornpic; //picture of playable character
 BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
@@ -39,7 +42,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
     public Board()
     { 
         Random rand = new Random();
-        int range = rand.nextInt(24); 
+        int range = rand.nextInt(1000); 
         addKeyListener(new TAdapter());
         addMouseListener(this);
         setFocusable(true);
@@ -48,12 +51,14 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5);
         shooting=new shot (user.x,BOARD_HEIGHT-100,5); 
         int enemyX=10;
-        int enemyY=10;
+        enemyY=10;
+        bomb= new tear (range,enemyY,5);
         for (int i=0; i<army.length; i++){
+          bomb.dropped=true;
           army[i]= new Enemy (enemyX,enemyY,10);
-          enemyX+=50; //creating row of enemy 50 units apart from each other
+          enemyX+=60; //creating row of enemy 50 units apart from each other
           if (i==11){ //new row after 12 enemy sad faces
-              enemyX=40; //set starting enemy back to original x position
+              enemyX=45; //set starting enemy back to original x position
               enemyY+=40; 
           }
     }
@@ -105,25 +110,39 @@ super.paint(g);
 
 g.setColor(Color.white);
 g.fillRect(0, 0, d.width, d.height); //set background colour to white
+Font small = new Font("Helvetica", Font.BOLD, 14);
+        FontMetrics metr = this.getFontMetrics(small);
+        g.setColor(Color.black);
+        g.setFont(small);
+        g.drawString("Score: "+score, 10, 10);
+        g.drawString ("Lives: "+ lives,900,10);
 
 //player
 g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over user (visual of player) 
 g.drawImage(ball,shooting.x,shooting.y,10,10,null);
-Random rand = new Random();
-int range = rand.nextInt(24); 
-bomb= new tear (army[range].x,army[range].y,5);
-g.drawImage (tear,bomb.x,bomb.y,10,10,null);
+ g.drawImage (tear,bomb.x,bomb.y,20,20,null);
 if (bomb.dropped==true){
-                bomb.y+=10; 
+             bomb.y+=5; 
+             if (bomb.y>500){
+                 bomb.dropped=false;
+             }
+             if (user.x<=bomb.x && bomb.x<=user.x+50 && user.y==bomb.y){
+               lives-=1; 
+             }
             }
-if (bomb.y>500){
-    bomb.dropped=false;
+if (bomb.dropped==false){
+    Random rand = new Random(); //everytime you fire enemy fires
+          int range = rand.nextInt(1000); 
+          bomb.x=range; 
+          bomb.y=enemyY;
+          bomb.dropped=true;
 }
 if (shooting.fired==true){
-       shooting.y-=10; 
+       shooting.y-=10;
        for (int i=0; i<army.length; i++){
        if (army[i].x<=shooting.x&& shooting.x<=army[i].x+30&& army[i].y<=shooting.y && shooting.y<=army[i].y){
         army[i].alive=false;
+        score+=10;
         shooting.y=800;
         shooting.x=900;  //set the ball to be invisable (off of visible screen) 
         shooting.fired=false; 
@@ -238,5 +257,6 @@ beforeTime = System.currentTimeMillis();
 
 }//end of class
 
+  
          
   
