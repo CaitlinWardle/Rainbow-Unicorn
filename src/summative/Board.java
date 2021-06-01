@@ -28,7 +28,6 @@ private Dimension d;
 int BOARD_WIDTH=1000;
 int BOARD_HEIGHT=500;
 int x = 0;
-int enemyY;
 BufferedImage unicornpic; //picture of playable character
 BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
@@ -51,7 +50,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5);
         shooting=new shot (user.x,BOARD_HEIGHT-100,5); 
         int enemyX=10;
-        enemyY=10;
+        int enemyY=10;
         bomb= new tear (range,enemyY,5);
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
@@ -134,7 +133,7 @@ if (bomb.dropped==false){
     Random rand = new Random(); //everytime you fire enemy fires
           int range = rand.nextInt(1000); 
           bomb.x=range; 
-          bomb.y=enemyY;
+          bomb.y=army[20].y;
           bomb.dropped=true;
 }
 if (shooting.fired==true){
@@ -257,6 +256,5 @@ beforeTime = System.currentTimeMillis();
 
 }//end of class
 
-  
          
   
