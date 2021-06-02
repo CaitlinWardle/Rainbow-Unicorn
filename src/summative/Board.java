@@ -21,7 +21,8 @@ import java.io.*;
 
 public class Board  extends JPanel implements Runnable, MouseListener
 {
-int lives= 3;
+//global variables (must exits everywhere) 
+int lives= 5;
 int score=0;
 boolean ingame = true;
 private Dimension d;
@@ -32,12 +33,13 @@ BufferedImage unicornpic; //picture of playable character
 BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
 BufferedImage tear; //enemy tears (bombs) 
+BufferedImage RIP; //Picture Displayed If you die
 private Thread animator;
 Player user;// creating users with actions
 shot shooting;
 tear bomb;
 Enemy [] army = new Enemy[24]; //creating enemy army of 24
- 
+
     public Board()
     { 
         Random rand = new Random();
@@ -47,18 +49,18 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         setFocusable(true);
         d = new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
         setBackground(Color.black);
-        user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5);
-        shooting=new shot (user.x,BOARD_HEIGHT-100,5); 
+        user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5); //screating a user at bottom of board
+        shooting=new shot (user.x,BOARD_HEIGHT-5,5); //shot comes from user but start off Screen screen
         int enemyX=10;
-        int enemyY=10;
+        int enemyY=10; //enemy army starting location
         bomb= new tear (range,enemyY,5);
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
           army[i]= new Enemy (enemyX,enemyY,10);
           enemyX+=60; //creating row of enemy 50 units apart from each other
           if (i==11){ //new row after 12 enemy sad faces
-              enemyX=45; //set starting enemy back to original x position
-              enemyY+=40; 
+              enemyX=45; //set new enemy row so it wont overlap
+              enemyY+=40; //move second row down
           }
     }
         //set up all needed images
@@ -102,6 +104,16 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
             animator = new Thread(this);
             animator.start();
             }
+        try{
+            RIP=ImageIO.read(this.getClass().getResource ("RIP.png"));
+        }
+        catch (IOException e){
+            System.out.println ("Unreadable image");
+        }
+            if (animator == null || !ingame) {
+            animator = new Thread(this);
+            animator.start();
+            }
         setDoubleBuffered(true);
     }
 public void paint(Graphics g){
@@ -114,45 +126,47 @@ Font small = new Font("Helvetica", Font.BOLD, 14);
         g.setColor(Color.black);
         g.setFont(small);
         g.drawString("Score: "+score, 10, 10);
-        g.drawString ("Lives: "+ lives,900,10);
+        g.drawString ("Lives: "+ lives,900,10); //set up score board and life count
 
 //player
 g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over user (visual of player) 
-g.drawImage(ball,shooting.x,shooting.y,10,10,null);
- g.drawImage (tear,bomb.x,bomb.y,20,20,null);
+g.drawImage(ball,shooting.x,shooting.y,10,10,null);//set the shot image
+ g.drawImage (tear,bomb.x,bomb.y,20,20,null); //set the bomb image
 if (bomb.dropped==true){
-             bomb.y+=5; 
-             if (bomb.y>500){
+             bomb.y+=5; //bombfalls
+             if (bomb.y>500){ //once off screen
                  bomb.dropped=false;
              }
              if (user.x<=bomb.x && bomb.x<=user.x+50 && user.y==bomb.y){
-               lives-=1; 
+               lives-=1; //is bomb hits player life is lost
              }
             }
-if (bomb.dropped==false){
-    Random rand = new Random(); //everytime you fire enemy fires
+if (bomb.dropped==false && lives!=0 && score!=240){
+    Random rand = new Random(); //reset the bomb to fall again once last bomb is off screen
           int range = rand.nextInt(1000); 
           bomb.x=range; 
           bomb.y=army[20].y;
           bomb.dropped=true;
 }
 if (shooting.fired==true){
-       shooting.y-=10;
-       for (int i=0; i<army.length; i++){
-       if (army[i].x<=shooting.x&& shooting.x<=army[i].x+30&& army[i].y<=shooting.y && shooting.y<=army[i].y){
-        army[i].alive=false;
-        score+=10;
-        shooting.y=800;
-        shooting.x=900;  //set the ball to be invisable (off of visible screen) 
-        shooting.fired=false; 
-       }
-       }
+       shooting.y-=10; //shot goes straight up
+    for (Enemy army1 : army) {
+        if (army1.x - 1 <= shooting.x && shooting.x <= army1.x + 30 && army1.y - 1 <= shooting.y && shooting.y <= army1.y) {
+            if (army1.alive==true){
+                score+=10;
+                shooting.y=800;
+                shooting.x=900;  //set the ball to be invisable (off of visible screen) 
+                shooting.fired=false; //reset
+                army1.alive = false; //if you hit enemy they die
+            }
+        }
     }
+}
 if (user.moveRight==true){
-    user.x+=user.speed;
+    user.x+=user.speed; //move right
 }
 if (user.moveLeft==true){ 
-    user.x-=user.speed; 
+    user.x-=user.speed; //move left
 }
 //keeps player on board 
 if (user.x>940){
@@ -162,58 +176,92 @@ if (user.x<0){
      user.x+=user.speed;
 }
 moveEnemy(); 
-for (int i=0; i<army.length; i++){
-    if (army[i].alive==true){
-        g.drawImage (sadpic, army[i].x, army[i].y, 30, 30,null); 
-       }
-}
+    for (Enemy army1 : army) {
+        if (army1.alive == true) {
+            //only draw enemy if it remains unhit by player
+            g.drawImage(sadpic, army1.x, army1.y, 30, 30, null);
+        }
+    }
     if (ingame) {
        
     }
+if (lives<=0){
+    g.drawImage (RIP,user.x,user.y-50,100,100,null); //display death image
+    for (Enemy army1 : army) {
+        //stop army
+        army1.moveLeft = false;
+        army1.moveRight = false;
+        g.setColor(Color.black); //display back screen
+        Font big = new Font("Helvetica", Font.BOLD, 35);
+        FontMetrics m = this.getFontMetrics(big);
+        g.fillRect(300,50,400,300);
+        g.setColor(Color.white);
+        g.setFont(big);
+        g.drawString("YOU  DIED", 400, 80);
+    }
+}
+if (score>=240){
+    for (Enemy army1 : army) {
+        //stop army
+        army1.moveLeft = false;
+        army1.moveRight = false;
+        g.setColor(Color.black); //display back screen
+        Font big = new Font("Helvetica", Font.BOLD, 35);
+        FontMetrics m = this.getFontMetrics(big);
+        g.fillRect(300,50,400,300);
+        g.setColor(Color.white);
+        g.setFont(big);
+        g.drawString("YOU  WON!!!", 400, 80);
+    }
+}
 Toolkit.getDefaultToolkit().sync();
 g.dispose();
 }
 public void moveEnemy(){
-    for (int i=0; i<army.length; i++){
-    if (army[i].moveLeft==true){
-        army[i].x-=2; 
+    for (Enemy army1 : army) {
+        if (army1.moveLeft == true) {
+            army1.x -= 2; //army shifts left
+        }
+        if (army1.moveRight == true) {
+            army1.x += 2; //army shifts right
+        }
     }
-    if (army[i].moveRight==true){
-        army[i].x+=2; 
-    }
-    }
-    for (int i=0; i<army.length; i++){
-    if (army[i].x>BOARD_WIDTH){
-      for (int n=0; n<army.length; n++){
-        army[n].moveLeft=true;
-        army[n].moveRight=false; 
-        army[n].y+=5; //when army hits edge of screen move down
-         }
-    }
-    if (army[i].x<0){
-      for (int n=0; n<army.length; n++){
-        army[n].moveRight=true;
-        army[n].moveLeft=false; 
-        army[n].y+=5;
-         }
+    for (Enemy army2 : army) {
+        if (army2.x > BOARD_WIDTH) {
+            for (Enemy army1 : army) {
+                army1.moveLeft = true; //when edge of screen hit change directions
+                army1.moveRight = false;
+                army1.y += 5; //when army hits edge of screen move down
+            }
+        }
+        if (army2.x < 0) {
+            for (Enemy army1 : army) {
+                army1.moveRight = true; //when edge of screen hit change directions
+                army1.moveLeft = false;
+                army1.y += 5;
+            }
+        }
     }
 }
-}
+
+    private void dispose() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 private class TAdapter extends KeyAdapter {
 public void keyReleased(KeyEvent e) {
      int key = e.getKeyCode();
      user.moveRight=false;
-     user.moveLeft=false;     
+     user.moveLeft=false;     //stop movement once key released
 }
 public void keyPressed(KeyEvent e) {
     int key = e.getKeyCode(); //find the key that was pressed
-        if(key==39){//when right arrow key is pressed
+        if(key==39 && lives>0){//when right arrow key is pressed
           user.moveRight=true; 
         }
-        if (key==37){
+        if (key==37 && lives>0){
           user.moveLeft=true; //when left arrow key is pressed
         }
-        if (key==32){
+        if (key==32 && lives>0){
           shooting.y=BOARD_HEIGHT-100;
           shooting.x=user.x; 
           shooting.fired=true;//when space key pressed fire shot
@@ -245,7 +293,7 @@ beforeTime = System.currentTimeMillis();
      // spriteManager.update();
       repaint();
       try {
-        time += animationDelay;
+        time += animationDelay;  //delay runtime
         Thread.sleep(Math.max(0,time - 
           System.currentTimeMillis()));
       }catch (InterruptedException e) {
