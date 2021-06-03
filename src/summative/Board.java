@@ -22,7 +22,7 @@ import java.io.*;
 public class Board  extends JPanel implements Runnable, MouseListener
 {
 //global variables (must exits everywhere) 
-int lives= 5;
+int lives= 3;
 int score=0;
 boolean ingame = true;
 private Dimension d;
@@ -34,10 +34,12 @@ BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
 BufferedImage tear; //enemy tears (bombs) 
 BufferedImage RIP; //Picture Displayed If you die
+BufferedImage rainbow;
 private Thread animator;
 Player user;// creating users with actions
 shot shooting;
 tear bomb;
+Rainbow RainbowHappy; 
 Enemy [] army = new Enemy[24]; //creating enemy army of 24
 
     public Board()
@@ -54,6 +56,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         int enemyX=10;
         int enemyY=10; //enemy army starting location
         bomb= new tear (range,enemyY,5);
+        RainbowHappy= new Rainbow (-100,100,5);
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
           army[i]= new Enemy (enemyX,enemyY,10);
@@ -66,6 +69,12 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         //set up all needed images
         try{
             tear=ImageIO.read(this.getClass().getResource ("tears.png"));
+        }
+        catch (IOException e){
+            System.out.println ("Unreadable image");
+        }
+        try{
+            rainbow=ImageIO.read(this.getClass().getResource ("rainbowhappy.png"));
         }
         catch (IOException e){
             System.out.println ("Unreadable image");
@@ -131,7 +140,10 @@ Font small = new Font("Helvetica", Font.BOLD, 14);
 //player
 g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over user (visual of player) 
 g.drawImage(ball,shooting.x,shooting.y,10,10,null);//set the shot image
- g.drawImage (tear,bomb.x,bomb.y,20,20,null); //set the bomb image
+g.drawImage (tear,bomb.x,bomb.y,20,20,null); //set the bomb image
+if (RainbowHappy.alive==true){
+    g.drawImage (rainbow,RainbowHappy.x,RainbowHappy.y,20,20,null);
+}
 if (bomb.dropped==true){
              bomb.y+=5; //bombfalls
              if (bomb.y>500){ //once off screen
@@ -160,7 +172,20 @@ if (shooting.fired==true){
                 army1.alive = false; //if you hit enemy they die
             }
         }
+       if (RainbowHappy.x<=shooting.x && shooting.x<=RainbowHappy.x +30 && RainbowHappy.y<=shooting.y && shooting.y<=RainbowHappy.y){
+         if (RainbowHappy.alive==true){
+              lives+=1; 
+              RainbowHappy.alive=false; 
+         }
+       }
     }
+}
+if (army[15].alive==false){
+    RainbowHappy.moveRight=true; 
+    
+}
+if (RainbowHappy.moveRight==true){
+    RainbowHappy.x+=2; 
 }
 if (user.moveRight==true){
     user.x+=user.speed; //move right
@@ -205,6 +230,18 @@ if (score>=240){
         //stop army
         army1.moveLeft = false;
         army1.moveRight = false;
+        g.setColor (Color.red);
+        g.fillRect (0,0,1000,83);
+        g.setColor (Color.orange);
+        g.fillRect (0,84,1000,83);
+        g.setColor (Color.yellow);
+        g.fillRect (0,168,1000,83);
+        g.setColor (Color.green);
+        g.fillRect (0,252,1000,83);
+        g.setColor (Color.blue);
+        g.fillRect (0,336,1000,83);
+        g.setColor (Color.MAGENTA);
+        g.fillRect (0,420,1000,83);
         g.setColor(Color.black); //display back screen
         Font big = new Font("Helvetica", Font.BOLD, 35);
         FontMetrics m = this.getFontMetrics(big);
@@ -302,7 +339,5 @@ beforeTime = System.currentTimeMillis();
     }//end while loop
 }//end of run
 
-}//end of class
-
-         
+}//end of class        
   
