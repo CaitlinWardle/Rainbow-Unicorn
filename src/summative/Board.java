@@ -9,9 +9,6 @@ import java.awt.Graphics;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.Timer;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import javax.swing.JPanel;
 import javax.imageio.*;
@@ -173,19 +170,24 @@ if (shooting.fired==true){
             }
         }
        if (RainbowHappy.x<=shooting.x && shooting.x<=RainbowHappy.x +30 && RainbowHappy.y<=shooting.y && shooting.y<=RainbowHappy.y){
-         if (RainbowHappy.alive==true){
+         if (RainbowHappy.alive==true){ //is you hit the speacle rainbowhappy bonus 
               lives+=1; 
               RainbowHappy.alive=false; 
          }
        }
     }
 }
-if (army[15].alive==false){
+if (army[15].alive==false || army[11].alive==false){ 
     RainbowHappy.moveRight=true; 
     
 }
 if (RainbowHappy.moveRight==true){
     RainbowHappy.x+=2; 
+}
+if (RainbowHappy.alive==false){
+    RainbowHappy.moveRight=false; 
+    RainbowHappy.x=-100;
+    RainbowHappy.y=100; 
 }
 if (user.moveRight==true){
     user.x+=user.speed; //move right
@@ -207,10 +209,7 @@ moveEnemy();
             g.drawImage(sadpic, army1.x, army1.y, 30, 30, null);
         }
     }
-    if (ingame) {
-       
-    }
-if (lives<=0){
+if (lives<=0){ //you die
     g.drawImage (RIP,user.x,user.y-50,100,100,null); //display death image
     for (Enemy army1 : army) {
         //stop army
@@ -223,9 +222,19 @@ if (lives<=0){
         g.setColor(Color.white);
         g.setFont(big);
         g.drawString("YOU  DIED", 400, 80);
+        g.setColor(Color.white);
+        g.fillRect(450,150,100,30);
+        g.setColor (Color.black);
+        g.setFont(small);
+        g.drawString ("Replay?",470,170);
+        g.setColor(Color.white);
+        g.fillRect(450,250,100,30);
+        g.setColor (Color.black);
+        g.setFont(small);
+        g.drawString ("Exit",490,265);
     }
 }
-if (score>=240){
+if (score>=240){ // you win
     for (Enemy army1 : army) {
         //stop army
         army1.moveLeft = false;
@@ -240,15 +249,25 @@ if (score>=240){
         g.fillRect (0,252,1000,83);
         g.setColor (Color.blue);
         g.fillRect (0,336,1000,83);
-        g.setColor (Color.MAGENTA);
+        g.setColor (Color.MAGENTA); //create celebration rainbow
         g.fillRect (0,420,1000,83);
-        g.setColor(Color.black); //display back screen
+        g.setColor(Color.white); //display back screen
         Font big = new Font("Helvetica", Font.BOLD, 35);
         FontMetrics m = this.getFontMetrics(big);
         g.fillRect(300,50,400,300);
-        g.setColor(Color.white);
+        g.setColor(Color.black);
         g.setFont(big);
-        g.drawString("YOU  WON!!!", 400, 80);
+        g.drawString("YOU  WON!!!", 400, 80); //winning banner
+        g.setColor(Color.black);
+        g.fillRect(450,150,100,30);
+        g.setColor (Color.white);
+        g.setFont(small);
+        g.drawString ("Replay?",470,170);
+        g.setColor(Color.black);
+        g.fillRect(450,250,100,30);
+        g.setColor (Color.white);
+        g.setFont(small);
+        g.drawString ("Exit",490,265);//set up buttons
     }
 }
 Toolkit.getDefaultToolkit().sync();
@@ -277,6 +296,9 @@ public void moveEnemy(){
                 army1.moveLeft = false;
                 army1.y += 5;
             }
+        }
+        if (army2.y>500){
+            lives=0;
         }
     }
 }
@@ -317,7 +339,27 @@ public void mouseEntered(MouseEvent e) {
 public void mouseExited(MouseEvent e) {
 }
 public void mouseClicked(MouseEvent e) {
-
+   int x=e.getX();
+   int y=e.getY();
+   if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 || lives==0)){
+       lives=3;
+       score=0;
+       for (int i=0; i<army.length; i++){
+           army[i].alive=true;      
+           army[i].moveLeft=true; 
+           if (i<12){
+               army[i].y =10; 
+           }
+           else{
+               army[i].y=50;
+           } 
+       }
+       RainbowHappy.x=-100;
+       RainbowHappy.y=100;
+   }
+   if (450<=x && x<=550 && 250<= y && y<=280 && (score==240 || lives==0)){
+       System.exit(1);
+   }
 }
 public void run() {
 long beforeTime, timeDiff, sleep;
@@ -339,5 +381,4 @@ beforeTime = System.currentTimeMillis();
     }//end while loop
 }//end of run
 
-}//end of class        
-  
+}//end of class
