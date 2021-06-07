@@ -32,6 +32,7 @@ BufferedImage ball;  //ball fired when player shoots
 BufferedImage tear; //enemy tears (bombs) 
 BufferedImage RIP; //Picture Displayed If you die
 BufferedImage rainbow;
+BufferedImage injured; 
 private Thread animator;
 Player user;// creating users with actions
 shot shooting;
@@ -64,6 +65,12 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
           }
     }
         //set up all needed images
+        try{
+            injured=ImageIO.read(this.getClass().getResource ("Injured.png"));
+        }
+        catch (IOException e){
+            System.out.println ("Unreadable image");
+        }
         try{
             tear=ImageIO.read(this.getClass().getResource ("tears.png"));
         }
@@ -147,7 +154,7 @@ if (bomb.dropped==true){
                  bomb.dropped=false;
              }
              if (user.x<=bomb.x && bomb.x<=user.x+50 && user.y==bomb.y){
-               lives-=1; //is bomb hits player life is lost
+               user.injured=true;  //if bomb hits player they are injured
              }
             }
 if (bomb.dropped==false && lives!=0 && score!=240){
@@ -170,23 +177,23 @@ if (shooting.fired==true){
             }
         }
        if (RainbowHappy.x<=shooting.x && shooting.x<=RainbowHappy.x +30 && RainbowHappy.y<=shooting.y && shooting.y<=RainbowHappy.y){
-         if (RainbowHappy.alive==true){ //is you hit the speacle rainbowhappy bonus 
-              lives+=1; 
+         if (RainbowHappy.alive==true){ //if you hit the speacle rainbowhappy bonus 
+              lives+=1; //gain a life
               RainbowHappy.alive=false; 
          }
        }
     }
 }
-if (army[15].alive==false || army[11].alive==false){ 
-    RainbowHappy.moveRight=true; 
+if (army[15].alive==false || army[11].alive==false){ //if you hit one "speacle" sadfaces
+    RainbowHappy.moveRight=true;  //rainbowhappy starts to more right
     
 }
-if (RainbowHappy.moveRight==true){
+if (RainbowHappy.moveRight==true){//move the rainbow happy across the screen
     RainbowHappy.x+=2; 
 }
-if (RainbowHappy.alive==false){
-    RainbowHappy.moveRight=false; 
-    RainbowHappy.x=-100;
+if (RainbowHappy.alive==false){ //if you hit the rainbow happy
+    RainbowHappy.moveRight=false; //it stops moving
+    RainbowHappy.x=-100;//resets to original position
     RainbowHappy.y=100; 
 }
 if (user.moveRight==true){
@@ -201,6 +208,11 @@ if (user.x>940){
          }
 if (user.x<0){
      user.x+=user.speed;
+}
+if (user.injured==true){ //if player is hit by bomb
+     g.drawImage(injured, user.x, user.y, 50, 50, null); //draw injured image
+     lives-=1; //take away one life
+     user.injured=false; //turn of injured images (player will flash red) 
 }
 moveEnemy(); 
     for (Enemy army1 : army) {
@@ -297,7 +309,7 @@ public void moveEnemy(){
                 army1.y += 5;
             }
         }
-        if (army2.y>500){
+        if (army2.y>500){ //if the army reaches the ground you die
             lives=0;
         }
     }
@@ -341,24 +353,26 @@ public void mouseExited(MouseEvent e) {
 public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
-   if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 || lives==0)){
-       lives=3;
+   if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 || lives==0)){//if the game ends and they click replay
+       lives=3; //reset lives and score
        score=0;
-       for (int i=0; i<army.length; i++){
-           army[i].alive=true;      
-           army[i].moveLeft=true; 
+       for (int i=0; i<army.length; i++){ //reset each army member
+           army[i].alive=true;//set all of them to be visible again      
+           army[i].moveLeft=true; //set them to move left
            if (i<12){
-               army[i].y =10; 
+               army[i].y =10; //reset first row
            }
            else{
-               army[i].y=50;
+               army[i].y=50; //reset second row of army
            } 
        }
-       RainbowHappy.x=-100;
+       RainbowHappy.x=-100;//reset the rainbowhappy
        RainbowHappy.y=100;
+       RainbowHappy.moveRight=false;
+       RainbowHappy.alive=true; 
    }
-   if (450<=x && x<=550 && 250<= y && y<=280 && (score==240 || lives==0)){
-       System.exit(1);
+   if (450<=x && x<=550 && 250<= y && y<=280 && (score==240 || lives==0)){//if game ends and they click exit
+       System.exit(1); //exit page
    }
 }
 public void run() {
