@@ -18,13 +18,14 @@ import java.io.*;
 
 public class Board  extends JPanel implements Runnable, MouseListener
 {
-//global variables (must exits everywhere) 
+//global variables (must exist everywhere) 
 int lives= 3;
 int score=0;
 boolean ingame = true;
 private Dimension d;
 int BOARD_WIDTH=1000;
 int BOARD_HEIGHT=500;
+int winStreak=0;
 int x = 0;
 double armyspeed; 
 BufferedImage unicornpic; //picture of playable character
@@ -156,7 +157,7 @@ if (bomb.dropped==true){
                  bomb.dropped=false;
              }
              if (user.x<=bomb.x && bomb.x<=user.x+50 && user.y==bomb.y){
-               user.injured=true;  //if bomb hits player they are injured
+                 user.injured=true; 
              }
             }
 if (bomb.dropped==false && lives!=0 && score!=240){
@@ -169,7 +170,7 @@ if (bomb.dropped==false && lives!=0 && score!=240){
 if (shooting.fired==true){
        shooting.y-=10; //shot goes straight up
     for (Enemy army1 : army) {
-        if (army1.x - 1 <= shooting.x && shooting.x <= army1.x + 30 && army1.y - 1 <= shooting.y && shooting.y <= army1.y) {
+        if (army1.x - 1 <= shooting.x && shooting.x <= army1.x + 35 && army1.y - 1 <= shooting.y && shooting.y <= army1.y) {
             if (army1.alive==true){
                 score+=10;
                 shooting.y=800;
@@ -212,9 +213,9 @@ if (user.x<0){
      user.x+=user.speed;
 }
 if (user.injured==true){ //if player is hit by bomb
-     g.drawImage(injured, user.x, user.y, 50, 50, null); //draw injured image
      lives-=1; //take away one life
-     user.injured=false; //turn of injured images (player will flash red) 
+     g.drawImage(injured, user.x, user.y, 50, 50, null); //draw injured image
+     user.injured=false;//turn off injured images (player will flash red) 
 }
 moveEnemy(); 
     for (Enemy army1 : army) {
@@ -223,7 +224,9 @@ moveEnemy();
             g.drawImage(sadpic, army1.x, army1.y, 30, 30, null);
         }
     }
+
 if (lives<=0){ //you die
+    winStreak=0; 
     g.drawImage (RIP,user.x,user.y-50,100,100,null); //display death image
     for (Enemy army1 : army) {
         //stop army
@@ -246,6 +249,10 @@ if (lives<=0){ //you die
         g.setColor (Color.black);
         g.setFont(small);
         g.drawString ("Exit",490,265);
+        g.drawString ("Replay?",470,170);
+        g.setColor (Color.white);
+        g.setFont (small);
+        g.drawString ("Win Streak: "+winStreak,450,130);
     }
 }
 if (score>=240){ // you win
@@ -282,6 +289,9 @@ if (score>=240){ // you win
         g.setColor (Color.white);
         g.setFont(small);
         g.drawString ("Exit",490,265);//set up buttons
+        g.setColor (Color.black);
+        g.setFont (small);
+        g.drawString ("Win Streak: "+winStreak,450,130);
     }
 }
 Toolkit.getDefaultToolkit().sync();
@@ -302,7 +312,7 @@ public void moveEnemy(){
                 army1.moveLeft = true; //when edge of screen hit change directions
                 army1.moveRight = false;
                 army1.y += 5; //when army hits edge of screen move down
-                armyspeed+=0.003; //speed up at y component increases
+                armyspeed+=0.0015; //speed up at y component increases
             }
         }
         if (army2.x < 0) {
@@ -310,6 +320,7 @@ public void moveEnemy(){
                 army1.moveRight = true; //when edge of screen hit change directions
                 army1.moveLeft = false;
                 army1.y += 5;
+                armyspeed+=0.0015; //speed up at y component increases
             }
         }
         if (army2.y>500){ //if the army reaches the ground you die
@@ -356,10 +367,17 @@ public void mouseExited(MouseEvent e) {
 public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
-   if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 || lives==0)){//if the game ends and they click replay
-       lives=3; //reset lives and score
-       score=0;
+   if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 ||lives==0)){//if the game ends and they click replay
+       lives=3; //reset lives
        armyspeed=2; //reset army speed
+       if (score==240){ //reset score and keep track of wins
+           score=0;   
+           winStreak+=1; 
+       }
+       else{
+           score=0;
+           winStreak=0;
+       }
        for (int i=0; i<army.length; i++){ //reset each army member
            army[i].alive=true;//set all of them to be visible again      
            army[i].moveLeft=true; //set them to move left
@@ -398,5 +416,4 @@ beforeTime = System.currentTimeMillis();
       }//end catch
     }//end while loop
 }//end of run
-
 }//end of class
