@@ -26,6 +26,7 @@ private Dimension d;
 int BOARD_WIDTH=1000;
 int BOARD_HEIGHT=500;
 int x = 0;
+double armyspeed; 
 BufferedImage unicornpic; //picture of playable character
 BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
@@ -49,6 +50,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         setFocusable(true);
         d = new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
         setBackground(Color.black);
+        armyspeed=2; 
         user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5); //screating a user at bottom of board
         shooting=new shot (user.x,BOARD_HEIGHT-5,5); //shot comes from user but start off Screen screen
         int enemyX=10;
@@ -57,7 +59,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         RainbowHappy= new Rainbow (-100,100,5);
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
-          army[i]= new Enemy (enemyX,enemyY,10);
+          army[i]= new Enemy (enemyX,enemyY,armyspeed);
           enemyX+=60; //creating row of enemy 50 units apart from each other
           if (i==11){ //new row after 12 enemy sad faces
               enemyX=45; //set new enemy row so it wont overlap
@@ -288,10 +290,10 @@ g.dispose();
 public void moveEnemy(){
     for (Enemy army1 : army) {
         if (army1.moveLeft == true) {
-            army1.x -= 2; //army shifts left
+            army1.x -= armyspeed; //army shifts left
         }
         if (army1.moveRight == true) {
-            army1.x += 2; //army shifts right
+            army1.x += armyspeed; //army shifts right
         }
     }
     for (Enemy army2 : army) {
@@ -300,6 +302,7 @@ public void moveEnemy(){
                 army1.moveLeft = true; //when edge of screen hit change directions
                 army1.moveRight = false;
                 army1.y += 5; //when army hits edge of screen move down
+                armyspeed+=0.003; //speed up at y component increases
             }
         }
         if (army2.x < 0) {
@@ -356,6 +359,7 @@ public void mouseClicked(MouseEvent e) {
    if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 || lives==0)){//if the game ends and they click replay
        lives=3; //reset lives and score
        score=0;
+       armyspeed=2; //reset army speed
        for (int i=0; i<army.length; i++){ //reset each army member
            army[i].alive=true;//set all of them to be visible again      
            army[i].moveLeft=true; //set them to move left
