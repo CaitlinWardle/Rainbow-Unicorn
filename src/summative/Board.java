@@ -14,6 +14,8 @@ import javax.swing.JPanel;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 //importing all libraries needed
 
 public class Board  extends JPanel implements Runnable, MouseListener
@@ -328,6 +330,14 @@ public void moveEnemy(){
         }
     }
 }
+public void savescore() throws FileNotFoundException{
+     FileOutputStream fos= new FileOutputStream("highscore.txt", true);
+     PrintWriter pw= new PrintWriter(fos);
+     if (winStreak>=1){         
+          pw.println (winStreak);
+          pw.close();
+     }
+}
 
     private void dispose() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -393,7 +403,12 @@ public void mouseClicked(MouseEvent e) {
        RainbowHappy.moveRight=false;
        RainbowHappy.alive=true; 
    }
-   if (450<=x && x<=550 && 250<= y && y<=280 && (score==240 || lives==0)){//if game ends and they click exit
+   if (450<=x && x<=550 && 250<= y && y<=280 && (score==240 || lives==0)){ //if game ends and they click exit
+       try {
+       savescore();
+       } catch (FileNotFoundException ex) {
+           Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+       }
        System.exit(1); //exit page
    }
 }
