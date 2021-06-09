@@ -42,7 +42,7 @@ Player user;// creating users with actions
 shot shooting;
 tear bomb;
 Rainbow RainbowHappy; 
-Enemy [] army = new Enemy[24]; //creating enemy army of 24
+Enemy [] army = new Enemy[25]; //creating enemy army of 25
 
     public Board()
     { 
@@ -56,7 +56,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         armyspeed=2; 
         user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5); //screating a user at bottom of board
         shooting=new shot (user.x,BOARD_HEIGHT-5,5); //shot comes from user but start off Screen screen
-        int enemyX=10;
+        int enemyX=45;
         int enemyY=10; //enemy army starting location
         bomb= new tear (range,enemyY,5);
         RainbowHappy= new Rainbow (-100,100,5);
@@ -65,7 +65,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
           army[i]= new Enemy (enemyX,enemyY,armyspeed);
           enemyX+=60; //creating row of enemy 60 units apart from each other
           if (i==11){ //new row after 12 enemy sad faces
-              enemyX=45; //set new enemy row so it wont overlap
+              enemyX=10; //set new enemy row so it wont overlap
               enemyY+=40; //move second row down
           }
     }
@@ -162,7 +162,7 @@ if (bomb.dropped==true){
                  user.injured=true; 
              }
             }
-if (bomb.dropped==false && lives!=0 && score!=240){
+if (bomb.dropped==false && lives!=0 && score!=250){
     Random rand = new Random(); //reset the bomb to fall again once last bomb is off screen
           int range = rand.nextInt(1000); 
           bomb.x=range; 
@@ -257,7 +257,7 @@ if (lives<=0){ //you die
         g.drawString ("Win Streak: "+winStreak,450,130);
     }
 }
-if (score>=240){ // you win
+if (score>=250){ // you win
     for (Enemy army1 : army) {
         //stop army
         army1.moveLeft = false;
@@ -377,10 +377,10 @@ public void mouseExited(MouseEvent e) {
 public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
-   if (450<=x && x<=550 && 150<= y && y<=180 && (score==240 ||lives==0)){//if the game ends and they click replay
+   if (450<=x && x<=550 && 150<= y && y<=180 && (score==250 ||lives==0)){//if the game ends and they click replay
        lives=3; //reset lives
        armyspeed=2; //reset army speed
-       if (score==240){ //reset score and keep track of wins
+       if (score==250){ //reset score and keep track of wins
            score=0;   
            winStreak+=1; 
        }
@@ -388,7 +388,7 @@ public void mouseClicked(MouseEvent e) {
            score=0;
            winStreak=0;
        }
-       int EnemyX=10;
+       int EnemyX=45;
        int EnemyY=10; 
        for (int i=0; i<army.length; i++){ //reset each army member
            army[i].alive=true;//set all of them to be visible again      
@@ -397,7 +397,7 @@ public void mouseClicked(MouseEvent e) {
            army[i].y =EnemyY; //reset first row
            EnemyX+=60; //creating row of enemy 60 units apart from each other
            if (i==11){ //new row after 12 enemy sad faces
-              EnemyX=45; //set new enemy row so it wont overlap
+              EnemyX=10; //set new enemy row so it wont overlap
               EnemyY+=40; //move second row down
           }
        }
@@ -406,7 +406,7 @@ public void mouseClicked(MouseEvent e) {
        RainbowHappy.moveRight=false;
        RainbowHappy.alive=true; 
    }
-   if (450<=x && x<=550 && 250<= y && y<=280 && (score==240 || lives==0)){ //if game ends and they click exit
+   if (450<=x && x<=550 && 250<= y && y<=280 && (score==250 || lives==0)){ //if game ends and they click exit
        try {
        savescore();
        } catch (FileNotFoundException ex) {
