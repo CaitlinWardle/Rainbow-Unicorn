@@ -63,7 +63,7 @@ Enemy [] army = new Enemy[24]; //creating enemy army of 24
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
           army[i]= new Enemy (enemyX,enemyY,armyspeed);
-          enemyX+=60; //creating row of enemy 50 units apart from each other
+          enemyX+=60; //creating row of enemy 60 units apart from each other
           if (i==11){ //new row after 12 enemy sad faces
               enemyX=45; //set new enemy row so it wont overlap
               enemyY+=40; //move second row down
@@ -388,15 +388,18 @@ public void mouseClicked(MouseEvent e) {
            score=0;
            winStreak=0;
        }
+       int EnemyX=10;
+       int EnemyY=10; 
        for (int i=0; i<army.length; i++){ //reset each army member
            army[i].alive=true;//set all of them to be visible again      
            army[i].moveLeft=true; //set them to move left
-           if (i<12){
-               army[i].y =10; //reset first row
-           }
-           else{
-               army[i].y=50; //reset second row of army
-           } 
+           army[i].x=EnemyX; 
+           army[i].y =EnemyY; //reset first row
+           EnemyX+=60; //creating row of enemy 60 units apart from each other
+           if (i==11){ //new row after 12 enemy sad faces
+              EnemyX=45; //set new enemy row so it wont overlap
+              EnemyY+=40; //move second row down
+          }
        }
        RainbowHappy.x=-100;//reset the rainbowhappy
        RainbowHappy.y=100;
