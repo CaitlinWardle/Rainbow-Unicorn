@@ -26,39 +26,39 @@ int score=0;
 boolean ingame = true;
 private Dimension d;
 int BOARD_WIDTH=1000;
-int BOARD_HEIGHT=500;
-int winStreak=0;
+int BOARD_HEIGHT=500;//set up board dimesions 
+int winStreak=1; //set up winstreak variable
 int x = 0;
-double armyspeed; 
+double armyspeed; //creating a double for the army speed varaible
 BufferedImage unicornpic; //picture of playable character
 BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
 BufferedImage tear; //enemy tears (bombs) 
-BufferedImage RIP; //Picture Displayed If you die
+BufferedImage RIP; //Picture Displayed If you dieF
 BufferedImage rainbow;
 BufferedImage injured; 
 private Thread animator;
 Player user;// creating users with actions
-shot shooting;
-tear bomb;
-Rainbow RainbowHappy; 
+shot shooting; //create shot
+tear bomb; //create bomb
+Rainbow RainbowHappy; //create bonus object
 Enemy [] army = new Enemy[25]; //creating enemy army of 25
 
     public Board()
     { 
         Random rand = new Random();
-        int range = rand.nextInt(1000); 
+        int range = rand.nextInt(1000); //setting up the bomb to appear randomly on x axis
         addKeyListener(new TAdapter());
         addMouseListener(this);
         setFocusable(true);
         d = new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
         setBackground(Color.black);
-        armyspeed=2; 
+        armyspeed=2; //initial speed of army
         user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5); //screating a user at bottom of board
         shooting=new shot (user.x,BOARD_HEIGHT-5,5); //shot comes from user but start off Screen screen
         int enemyX=45;
         int enemyY=10; //enemy army starting location
-        bomb= new tear (range,enemyY,5);
+        bomb= new tear (range,enemyY,5); //bomb follows the army's y location
         RainbowHappy= new Rainbow (-100,100,5);
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
@@ -159,22 +159,22 @@ if (bomb.dropped==true){
                  bomb.dropped=false;
              }
              if (user.x<=bomb.x && bomb.x<=user.x+50 && user.y==bomb.y){
-                 user.injured=true; 
+                 user.injured=true; //if bomb hits you get hurt
              }
             }
 if (bomb.dropped==false && lives!=0 && score!=250){
     Random rand = new Random(); //reset the bomb to fall again once last bomb is off screen
           int range = rand.nextInt(1000); 
-          bomb.x=range; 
-          bomb.y=army[20].y;
-          bomb.dropped=true;
+          bomb.x=range; //setting bomb to drop from random x
+          bomb.y=army[20].y; //setting bomb to drop from bottom row of enemy
+          bomb.dropped=true; //reset bomb to fall again
 }
 if (shooting.fired==true){
        shooting.y-=10; //shot goes straight up
     for (Enemy army1 : army) {
         if (army1.x - 1 <= shooting.x && shooting.x <= army1.x + 35 && army1.y - 1 <= shooting.y && shooting.y <= army1.y) {
             if (army1.alive==true){
-                score+=10;
+                score+=10; //10 points for murder!
                 shooting.y=800;
                 shooting.x=900;  //set the ball to be invisable (off of visible screen) 
                 shooting.fired=false; //reset
@@ -182,15 +182,15 @@ if (shooting.fired==true){
             }
         }
        if (RainbowHappy.x<=shooting.x && shooting.x<=RainbowHappy.x +30 && RainbowHappy.y<=shooting.y && shooting.y<=RainbowHappy.y){
-         if (RainbowHappy.alive==true){ //if you hit the speacle rainbowhappy bonus 
+         if (RainbowHappy.alive==true){ //if you hit the special rainbowhappy bonus 
               lives+=1; //gain a life
-              RainbowHappy.alive=false; 
+              RainbowHappy.alive=false; //getting rid of bonus
          }
        }
     }
 }
-if (army[15].alive==false || army[11].alive==false){ //if you hit one "speacle" sadfaces
-    RainbowHappy.moveRight=true;  //rainbowhappy starts to more right
+if (army[15].alive==false || army[11].alive==false){ //if you hit one of "special" sadfaces
+    RainbowHappy.moveRight=true;  //rainbowhappy starts to move right
     
 }
 if (RainbowHappy.moveRight==true){//move the rainbow happy across the screen
@@ -254,10 +254,13 @@ if (lives<=0){ //you die
         g.drawString ("Replay?",470,170);
         g.setColor (Color.white);
         g.setFont (small);
-        g.drawString ("Win Streak: "+winStreak,450,130);
+        g.drawString ("Win Streak: "+winStreak,450,130); //display buttons and winStreak
     }
 }
 if (score>=250){ // you win
+    if (winStreak==0){
+        winStreak=1; 
+    }
     for (Enemy army1 : army) {
         //stop army
         army1.moveLeft = false;
@@ -293,13 +296,13 @@ if (score>=250){ // you win
         g.drawString ("Exit",490,265);//set up buttons
         g.setColor (Color.black);
         g.setFont (small);
-        g.drawString ("Win Streak: "+winStreak,450,130);
+        g.drawString ("Win Streak: "+winStreak,450,130); //display buttons and winStreak
     }
 }
 Toolkit.getDefaultToolkit().sync();
 g.dispose();
 }
-public void moveEnemy(){
+public void moveEnemy(){ //new method to move army
     for (Enemy army1 : army) {
         if (army1.moveLeft == true) {
             army1.x -= armyspeed; //army shifts left
@@ -330,11 +333,11 @@ public void moveEnemy(){
         }
     }
 }
-public void savescore() throws FileNotFoundException{
-     FileOutputStream fos= new FileOutputStream("highscore.txt", true);
+public void savescore() throws FileNotFoundException{ //sets up new file
+     FileOutputStream fos= new FileOutputStream("highscore.txt", true); //create file
      PrintWriter pw= new PrintWriter(fos);
-     if (winStreak>=1){         
-          pw.println (winStreak);
+     if (winStreak>=1){         //only if the winstreak exists
+          pw.println (winStreak);//put the winstreak value into the file
           pw.close();
      }
 }
@@ -408,7 +411,7 @@ public void mouseClicked(MouseEvent e) {
    }
    if (450<=x && x<=550 && 250<= y && y<=280 && (score==250 || lives==0)){ //if game ends and they click exit
        try {
-       savescore();
+       savescore();//run save score to save winstrak value to file
        } catch (FileNotFoundException ex) {
            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
        }
