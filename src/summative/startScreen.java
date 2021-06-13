@@ -429,6 +429,9 @@ BufferedImage logo;
        try {
         FileOutputStream fos = new FileOutputStream("username.txt", true); //create file
         PrintWriter pw= new PrintWriter(fos);
+        if (jTextField1.getText()==""){
+            jTextField1.setText("anonymous");
+        }
         String user= jTextField1.getText();
         pw.println (user);
         pw.close();}
@@ -455,6 +458,7 @@ BufferedImage logo;
 
     }                                           
   private String highscore () throws FileNotFoundException {
+      try{
        Scanner fileScanner = new Scanner(new File("highscore.txt"));
         int max = fileScanner.nextInt();
         ArrayList <Integer> scores= new ArrayList <>();
@@ -479,6 +483,12 @@ BufferedImage logo;
         String highscore= Integer.toString(max);
         String line= (highscore+ " "+ winner);
         return line; 
+      }
+      catch (Exception e){
+          
+      }
+      String noWinner= ("N/A");
+      return noWinner;
   }
 
 
