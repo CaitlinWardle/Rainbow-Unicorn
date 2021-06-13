@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //importing all libraries needed
@@ -21,6 +22,7 @@ import java.util.logging.Logger;
 public class Board  extends JPanel implements Runnable, MouseListener
 {
 //global variables (must exist everywhere) 
+String username="";
 int lives= 3;
 int score=0;
 boolean ingame = true;
@@ -336,10 +338,32 @@ public void moveEnemy(){ //new method to move army
 public void savescore() throws FileNotFoundException{ //sets up new file
      FileOutputStream fos= new FileOutputStream("highscore.txt", true); //create file
      PrintWriter pw= new PrintWriter(fos);
-     if (winStreak>=1){         //only if the winstreak exists
+     if (winStreak>=0){         //only if the winstreak exists
           pw.println (winStreak);//put the winstreak value into the file
           pw.close();
      }
+}
+
+public void highscore () throws FileNotFoundException {
+     Scanner fileScanner = new Scanner(new File("highscore.txt"));
+        int max = fileScanner.nextInt();
+        while (fileScanner.hasNext()){
+            int num = fileScanner.nextInt();
+            if (num > max) {
+                max=num;
+            }
+        }
+        if (winStreak>max){
+            Scanner file = new Scanner(new File("username.txt"));
+            String lastLine = fileScanner.nextLine();
+            while (fileScanner.hasNext()){
+            lastLine =fileScanner.nextLine() ;   
+        }
+         FileOutputStream fos= new FileOutputStream("HighScoreUser.txt", true); //create file
+         PrintWriter pw= new PrintWriter(fos);
+         pw.println (lastLine);
+         pw.close(); 
+        }
 }
 
     private void dispose() {
@@ -366,6 +390,7 @@ public void keyPressed(KeyEvent e) {
         }
 }   
 }
+  
 public void mousePressed(MouseEvent e) {
     int x = e.getX();
      int y = e.getY();
