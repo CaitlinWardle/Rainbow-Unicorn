@@ -23,7 +23,7 @@ public class Board  extends JPanel implements Runnable, MouseListener
 {
 //global variables (must exist everywhere) 
 String username="";
-int lives= 3;
+int lives= 5;
 int score=0;
 boolean ingame = true;
 private Dimension d;
@@ -324,7 +324,7 @@ public void moveEnemy(){ //new method to move army
                 army1.moveLeft = true; //when edge of screen hit change directions
                 army1.moveRight = false;
                 army1.y += 5; //when army hits edge of screen move down
-                armyspeed+=0.0015; //speed up at y component increases
+                armyspeed+=0.001; //speed up at y component increases
             }
         }
         if (army2.x < 0) {
@@ -332,7 +332,7 @@ public void moveEnemy(){ //new method to move army
                 army1.moveRight = true; //when edge of screen hit change directions
                 army1.moveLeft = false;
                 army1.y += 5;
-                armyspeed+=0.0015; //speed up at y component increases
+                armyspeed+=0.001; //speed up at y component increases
             }
         }
         if (army2.y>500){ //if the army reaches the ground you die
@@ -411,7 +411,7 @@ public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
    if (450<=x && x<=550 && 150<= y && y<=180 && (score==250 ||lives==0)){//if the game ends and they click replay
-       lives=3; //reset lives
+       lives=5; //reset lives
        armyspeed=2; //reset army speed
        if (score==250){ //reset score and keep track of wins
            score=0;   
