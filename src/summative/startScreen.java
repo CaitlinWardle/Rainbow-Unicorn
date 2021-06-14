@@ -1,12 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Games start screen and main class (is played first)
  */
 package summative;
 
-
-import java.awt.List;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,15 +12,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 /**
  *
  * @author Caitlin
  */
 public class startScreen extends javax.swing.JFrame {
-BufferedImage logo; 
-
-
+BufferedImage logo; //set up the logo image
     /**
      * Creates new form startScreen
      */
@@ -431,28 +424,28 @@ BufferedImage logo;
         FileOutputStream fos = new FileOutputStream("username.txt", true); //create file
         PrintWriter pw= new PrintWriter(fos);
         if (jTextField1.getText()==""){
-            jTextField1.setText("anonymous");
+            jTextField1.setText("anonymous");//set default text
         }
         String user= jTextField1.getText();
         pw.println (user);
-        pw.close();}
+        pw.close();}//add player name to username file
        catch (FileNotFoundException ex) {
         Logger.getLogger(startScreen.class.getName()).log(Level.SEVERE, null, ex);
     }
         
         this.dispose();
         CallScreen play= new CallScreen();
-        play.setVisible (true);
+        play.setVisible (true);//display the game
     }                                        
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {                                         
-    System.exit(1);
+    System.exit(1);//exit game
     }                                        
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {                                         
         this.dispose();
         Instructions play= new Instructions();
-        play.setVisible (true);
+        play.setVisible (true);//play the instructions gui
     }                                        
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {                                            
@@ -460,35 +453,36 @@ BufferedImage logo;
     }                                           
   private String highscore () throws FileNotFoundException {
       try{
-       Scanner fileScanner = new Scanner(new File("highscore.txt"));
+       Scanner fileScanner = new Scanner(new File("highscore.txt")); //read the file
         int max = fileScanner.nextInt();
         ArrayList <Integer> scores= new ArrayList <>();
         while (fileScanner.hasNext()){
             int num = fileScanner.nextInt();
-            scores.add(num); 
+            scores.add(num); //add the scores as an array
             if (num > max) {
-                max=num;
+                max=num;//find the max
             }
         }
         int placement=0; 
         while (scores.get(placement)<max){
-            placement+=1; 
+            placement+=1; //find where the max is in the array
         }
-        Scanner file= new Scanner(new File("username.txt"));
+        Scanner file= new Scanner(new File("username.txt"));//read the username file
         ArrayList <String> user= new ArrayList <>();
         while (file.hasNext()){
             String person= file.nextLine();
-            user.add(person);
+            user.add(person);//add all the names to a string array
         }
-        String winner= user.get(placement+1);
+        String winner= user.get(placement+1);//get the username that corrasponds to the max score
         String highscore= Integer.toString(max);
-        String line= (highscore+ " Rounds by "+ winner);
-        return line; 
+        String line= (highscore+ " Rounds by "+ winner); //display user and score
+        return line; //return the user and score
       }
       catch (Exception e){
           
       }
-      String noWinner= ("N/A");
+      //if there is nothing in the file or the reading of files fails
+      String noWinner= ("N/A"); //display 
       return noWinner;
   }
 
