@@ -40,6 +40,7 @@ BufferedImage RIP; //Picture Displayed If you dieF
 BufferedImage rainbow;
 BufferedImage injured; 
 private Thread animator;
+boolean injuredImage;
 Player user;// creating users with actions
 shot shooting; //create shot
 tear bomb; //create bomb
@@ -169,6 +170,7 @@ if (bomb.dropped==false && lives!=0 && score!=250){
           int range = rand.nextInt(1000); 
           bomb.x=range; //setting bomb to drop from random x
           bomb.y=army[20].y; //setting bomb to drop from bottom row of enemy
+          injuredImage=false; 
           bomb.dropped=true; //reset bomb to fall again
 }
 if (shooting.fired==true){
@@ -218,8 +220,11 @@ if (user.x<0){
 }
 if (user.injured==true){ //if player is hit by bomb
      lives-=1; //take away one life
-     g.drawImage(injured, user.x, user.y, 50, 50, null); //draw injured image
      user.injured=false;//turn off injured images (player will flash red) 
+     injuredImage=true;
+}
+if (injuredImage==true){
+    g.drawImage(injured, user.x, user.y, 50, 50, null); //draw injured image
 }
 moveEnemy(); 
     for (Enemy army1 : army) {
