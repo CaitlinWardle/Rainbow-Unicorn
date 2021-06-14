@@ -14,7 +14,6 @@ import javax.swing.JPanel;
 import javax.imageio.*;
 import java.awt.image.*;
 import java.io.*;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 //importing all libraries needed
@@ -30,17 +29,16 @@ private Dimension d;
 int BOARD_WIDTH=1000;
 int BOARD_HEIGHT=500;//set up board dimesions 
 int winStreak=1; //set up winstreak variable
-int x = 0;
 double armyspeed; //creating a double for the army speed varaible
 BufferedImage unicornpic; //picture of playable character
 BufferedImage sadpic;  //enemy sadaces
 BufferedImage ball;  //ball fired when player shoots
 BufferedImage tear; //enemy tears (bombs) 
-BufferedImage RIP; //Picture Displayed If you dieF
-BufferedImage rainbow;
-BufferedImage injured; 
+BufferedImage RIP; //Picture Displayed If you die
+BufferedImage rainbow;//death image
+BufferedImage injured; //hurt image
 private Thread animator;
-boolean injuredImage;
+boolean injuredImage;//displaying the hurt image
 Player user;// creating users with actions
 shot shooting; //create shot
 tear bomb; //create bomb
@@ -137,6 +135,7 @@ Enemy [] army = new Enemy[25]; //creating enemy army of 25
             }
         setDoubleBuffered(true);
     }
+@Override
 public void paint(Graphics g){
 super.paint(g);
 
@@ -233,9 +232,8 @@ moveEnemy();
             g.drawImage(sadpic, army1.x, army1.y, 30, 30, null);
         }
     }
-
 if (lives<=0){ //you die
-    winStreak=0; 
+    winStreak=0; //reset winstreak to zero
     g.drawImage (RIP,user.x,user.y-50,100,100,null); //display death image
     for (Enemy army1 : army) {
         //stop army
@@ -266,7 +264,7 @@ if (lives<=0){ //you die
 }
 if (score>=250){ // you win
     if (winStreak==0){
-        winStreak=1; 
+        winStreak=1; //add to winstreak if at zero
     }
     for (Enemy army1 : army) {
         //stop army
@@ -349,37 +347,17 @@ public void savescore() throws FileNotFoundException{ //sets up new file
      }
 }
 
-public void highscore () throws FileNotFoundException {
-     Scanner fileScanner = new Scanner(new File("highscore.txt"));
-        int max = fileScanner.nextInt();
-        while (fileScanner.hasNext()){
-            int num = fileScanner.nextInt();
-            if (num > max) {
-                max=num;
-            }
-        }
-        if (winStreak>max){
-            Scanner file = new Scanner(new File("username.txt"));
-            String lastLine = fileScanner.nextLine();
-            while (fileScanner.hasNext()){
-            lastLine =fileScanner.nextLine() ;   
-        }
-         FileOutputStream fos= new FileOutputStream("HighScoreUser.txt", true); //create file
-         PrintWriter pw= new PrintWriter(fos);
-         pw.println (lastLine);
-         pw.close(); 
-        }
-}
-
     private void dispose() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 private class TAdapter extends KeyAdapter {
+@Override
 public void keyReleased(KeyEvent e) {
      int key = e.getKeyCode();
      user.moveRight=false;
      user.moveLeft=false;     //stop movement once key released
 }
+@Override
 public void keyPressed(KeyEvent e) {
     int key = e.getKeyCode(); //find the key that was pressed
         if(key==39 && lives>0){//when right arrow key is pressed
@@ -390,23 +368,28 @@ public void keyPressed(KeyEvent e) {
         }
         if (key==32 && lives>0){
           shooting.y=BOARD_HEIGHT-100;
-          shooting.x=user.x; 
+          shooting.x=user.x; //fire shot from user
           shooting.fired=true;//when space key pressed fire shot
         }
 }   
 }
   
+@Override
 public void mousePressed(MouseEvent e) {
     int x = e.getX();
      int y = e.getY();
 }
+@Override
 public void mouseReleased(MouseEvent e) {
 }
+@Override
 public void mouseEntered(MouseEvent e) {
 }
 
+@Override
 public void mouseExited(MouseEvent e) {
 }
+@Override
 public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
@@ -448,6 +431,7 @@ public void mouseClicked(MouseEvent e) {
        System.exit(1); //exit page
    }
 }
+@Override
 public void run() {
 long beforeTime, timeDiff, sleep;
 
