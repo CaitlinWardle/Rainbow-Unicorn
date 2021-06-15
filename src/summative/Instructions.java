@@ -64,7 +64,7 @@ public class Instructions extends javax.swing.JFrame {
         jLabel7.setText("You can fire hearts to elliminate them, but beware! They are dropping tears that drop your lives");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("You only have three lives and you must destroy all the sad faces, Good Luck");
+        jLabel8.setText("You only have five lives and you must destroy all the sad faces, Good Luck");
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/summative/spaceBar.png"))); // NOI18N
 
@@ -112,16 +112,15 @@ public class Instructions extends javax.swing.JFrame {
                         .addComponent(jLabel5))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(10, 10, 10)
-                                .addComponent(jLabel8))
-                            .addComponent(jLabel7)))
+                        .addComponent(jLabel7))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(244, 244, 244)
                         .addComponent(jButton1)
                         .addGap(75, 75, 75)
-                        .addComponent(jButton2)))
+                        .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(66, 66, 66)
+                        .addComponent(jLabel8)))
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
