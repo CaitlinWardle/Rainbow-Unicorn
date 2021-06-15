@@ -22,7 +22,7 @@ public class Board  extends JPanel implements Runnable, MouseListener
 {
 //global variables (must exist everywhere) 
 String username="";
-int lives= 5;
+int lives= 3;
 int score=0;
 boolean ingame = true;
 private Dimension d;
@@ -175,7 +175,7 @@ if (bomb.dropped==false && lives!=0 && score!=250){
 if (shooting.fired==true){
        shooting.y-=10; //shot goes straight up
     for (Enemy army1 : army) {
-        if (army1.x - 1 <= shooting.x && shooting.x <= army1.x + 35 && army1.y - 1 <= shooting.y && shooting.y <= army1.y) {
+        if (army1.x - 5 <= shooting.x && shooting.x <= army1.x + 35 && army1.y - 5 <= shooting.y && shooting.y <= army1.y+5) {
             if (army1.alive==true){
                 score+=10; //10 points for murder!
                 shooting.y=800;
@@ -322,7 +322,7 @@ public void moveEnemy(){ //new method to move army
                 army1.moveLeft = true; //when edge of screen hit change directions
                 army1.moveRight = false;
                 army1.y += 5; //when army hits edge of screen move down
-                armyspeed+=0.001; //speed up at y component increases
+                armyspeed+=0.002; //speed up at y component increases
             }
         }
         if (army2.x < 0) {
@@ -330,7 +330,7 @@ public void moveEnemy(){ //new method to move army
                 army1.moveRight = true; //when edge of screen hit change directions
                 army1.moveLeft = false;
                 army1.y += 5;
-                armyspeed+=0.001; //speed up at y component increases
+                armyspeed+=0.002; //speed up at y component increases
             }
         }
         if (army2.y>500){ //if the army reaches the ground you die
@@ -394,7 +394,7 @@ public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
    if (450<=x && x<=550 && 150<= y && y<=180 && (score==250 ||lives==0)){//if the game ends and they click replay
-       lives=5; //reset lives
+       lives=3; //reset lives
        armyspeed=2; //reset army speed
        if (score==250){ //reset score and keep track of wins
            score=0;   
