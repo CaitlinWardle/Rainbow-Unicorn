@@ -64,7 +64,7 @@ public class Instructions extends javax.swing.JFrame {
         jLabel7.setText("You can fire hearts to elliminate them, but beware! They are dropping tears that drop your lives");
 
         jLabel8.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel8.setText("You only have five lives and you must destroy all the sad faces, Good Luck");
+        jLabel8.setText("You only have three lives and you must destroy all the sad faces, Good Luck");
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/summative/spaceBar.png"))); // NOI18N
 
