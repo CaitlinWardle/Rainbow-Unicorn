@@ -395,17 +395,17 @@ public void mouseClicked(MouseEvent e) {
    int y=e.getY();
    if (450<=x && x<=550 && 150<= y && y<=180 && (score==250 ||lives==0)){//if the game ends and they click replay
        lives=3; //reset lives
-       //dont reset speed so it gets harder the more rounds you play
-       if (lives==0){
-           armyspeed=2; //reset army speed if they lose there winstreak 
-       }
        if (score==250){ //reset score and keep track of wins
            score=0;   
            winStreak+=1; 
+           double increase= winStreak/5; 
+           armyspeed=2+increase;//increase base speed everytime they win in a row
+              
        }
        else{
            score=0;
            winStreak=0;
+           armyspeed=2; //reset army speed if they lose there winstreak 
        }
        int EnemyX=45;
        int EnemyY=10; 
