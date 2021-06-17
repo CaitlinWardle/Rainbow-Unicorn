@@ -350,10 +350,11 @@ BufferedImage logo; //set up the logo image
                                             .addComponent(jLabel27, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                 .addGap(18, 18, 18)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel31)
-                                .addComponent(jLabel37))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jLabel37)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel31)))
                             .addComponent(jLabel33)
                             .addComponent(jLabel34)
                             .addComponent(jLabel35)
@@ -475,16 +476,16 @@ BufferedImage logo; //set up the logo image
         }
         String winner= user.get(placement+1);//get the username that corrasponds to the max score
         String highscore= Integer.toString(max);
-        String line= (highscore+ " Rounds by "+ winner); //display user and score
-        return line; //return the user and score
+        String line= (highscore+ " Rounds by "+ winner); 
+        return line; 
       }
       catch (Exception e){
           
       }
       //if there is nothing in the file or the reading of files fails
-      String noWinner= ("N/A"); //display 
+      String noWinner= ("N/A"); 
       return noWinner;
-  }
+  }//end of method
 
 
     /**
