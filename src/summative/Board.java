@@ -27,23 +27,24 @@ int score=0;
 boolean ingame = true;
 private Dimension d;
 int BOARD_WIDTH=1000;
-int BOARD_HEIGHT=500;//set up board dimesions 
-int winStreak=1; //set up winstreak variable
-double armyspeed; //creating a double for the army speed varaible
-BufferedImage unicornpic; //picture of playable character
-BufferedImage sadpic;  //enemy sadaces
-BufferedImage ball;  //ball fired when player shoots
-BufferedImage tear; //enemy tears (bombs) 
-BufferedImage RIP; //Picture Displayed If you die
-BufferedImage rainbow;//death image
-BufferedImage injured; //hurt image
+int BOARD_HEIGHT=500;
+int winStreak=1; 
+double armyspeed; 
+BufferedImage unicornpic; 
+BufferedImage sadpic;  
+BufferedImage ball;  
+BufferedImage tear; 
+BufferedImage RIP; 
+BufferedImage rainbow;
+BufferedImage injured; 
 private Thread animator;
-boolean injuredImage;//displaying the hurt image
-Player user;// creating users with actions
-shot shooting; //create shot
-tear bomb; //create bomb
-Rainbow RainbowHappy; //create bonus object
+boolean injuredImage;
+Player user;
+shot shooting; 
+tear bomb; 
+Rainbow RainbowHappy; 
 Enemy [] army = new Enemy[25]; //creating enemy army of 25
+
 
     public Board()
     { 
@@ -54,22 +55,23 @@ Enemy [] army = new Enemy[25]; //creating enemy army of 25
         setFocusable(true);
         d = new Dimension(BOARD_WIDTH, BOARD_HEIGHT);
         setBackground(Color.black);
-        armyspeed=2; //initial speed of army
-        user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5); //screating a user at bottom of board
+        armyspeed=2; 
+        user= new Player (BOARD_WIDTH/2,BOARD_HEIGHT-90,5); 
         shooting=new shot (user.x,BOARD_HEIGHT-5,5); //shot comes from user but start off Screen screen
         int enemyX=45;
-        int enemyY=10; //enemy army starting location
+        int enemyY=10;
         bomb= new tear (range,enemyY,5); //bomb follows the army's y location
         RainbowHappy= new Rainbow (-100,100,5);
         for (int i=0; i<army.length; i++){
           bomb.dropped=true;
           army[i]= new Enemy (enemyX,enemyY,armyspeed);
-          enemyX+=60; //creating row of enemy 60 units apart from each other
+          enemyX+=60; 
           if (i==11){ //new row after 12 enemy sad faces
-              enemyX=10; //set new enemy row so it wont overlap
-              enemyY+=40; //move second row down
+              enemyX=10; 
+              enemyY+=40; 
           }
     }
+       
         //set up all needed images
         try{
             injured=ImageIO.read(this.getClass().getResource ("Injured.png"));
@@ -136,80 +138,92 @@ Enemy [] army = new Enemy[25]; //creating enemy army of 25
         setDoubleBuffered(true);
     }
 @Override
+
+
 public void paint(Graphics g){
 super.paint(g);
 
 g.setColor(Color.white);
-g.fillRect(0, 0, d.width, d.height); //set background colour to white
+g.fillRect(0, 0, d.width, d.height); 
 Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = this.getFontMetrics(small);
         g.setColor(Color.black);
         g.setFont(small);
         g.drawString("Score: "+score, 10, 10);
-        g.drawString ("Lives: "+ lives,900,10); //set up score board and life count
+        g.drawString ("Lives: "+ lives,900,10); 
 
 //player
 g.drawImage (unicornpic,user.x,user.y,50,50,null); //set the unicorn to be over user (visual of player) 
-g.drawImage(ball,shooting.x,shooting.y,10,10,null);//set the shot image
-g.drawImage (tear,bomb.x,bomb.y,20,20,null); //set the bomb image
+g.drawImage(ball,shooting.x,shooting.y,10,10,null);
+g.drawImage (tear,bomb.x,bomb.y,20,20,null); 
+
 if (RainbowHappy.alive==true){
     g.drawImage (rainbow,RainbowHappy.x,RainbowHappy.y,20,20,null);
 }
+
 if (bomb.dropped==true){
-             bomb.y+=5; //bombfalls
-             if (bomb.y>500){ //once off screen
+             bomb.y+=5; 
+             if (bomb.y>500){ 
                  bomb.dropped=false;
              }
              if (user.x<=bomb.x && bomb.x<=user.x+50 && user.y==bomb.y){
-                 user.injured=true; //if bomb hits you get hurt
+                 user.injured=true; 
              }
             }
+
 if (bomb.dropped==false && lives!=0 && score!=250){
-    Random rand = new Random(); //reset the bomb to fall again once last bomb is off screen
+    Random rand = new Random(); 
           int range = rand.nextInt(1000); 
           bomb.x=range; //setting bomb to drop from random x
-          bomb.y=army[20].y; //setting bomb to drop from bottom row of enemy
+          bomb.y=army[20].y; 
           injuredImage=false; 
           bomb.dropped=true; //reset bomb to fall again
 }
+
 if (shooting.fired==true){
-       shooting.y-=10; //shot goes straight up
+       shooting.y-=10; 
     for (Enemy army1 : army) {
         if (army1.x - 5 <= shooting.x && shooting.x <= army1.x + 35 && army1.y - 5 <= shooting.y && shooting.y <= army1.y+5) {
             if (army1.alive==true){
-                score+=10; //10 points for murder!
+                score+=10;
                 shooting.y=800;
                 shooting.x=900;  //set the ball to be invisable (off of visible screen) 
-                shooting.fired=false; //reset
-                army1.alive = false; //if you hit enemy they die
+                shooting.fired=false; 
+                army1.alive = false; 
             }
         }
        if (RainbowHappy.x<=shooting.x && shooting.x<=RainbowHappy.x +30 && RainbowHappy.y<=shooting.y && shooting.y<=RainbowHappy.y){
-         if (RainbowHappy.alive==true){ //if you hit the special rainbowhappy bonus 
-              lives+=1; //gain a life
-              RainbowHappy.alive=false; //getting rid of bonus
+         if (RainbowHappy.alive==true){ 
+              lives+=1; 
+              RainbowHappy.alive=false; 
          }
        }
     }
 }
-if (army[15].alive==false || army[11].alive==false){ //if you hit one of "special" sadfaces
-    RainbowHappy.moveRight=true;  //rainbowhappy starts to move right
+
+if (army[15].alive==false || army[11].alive==false){
+    RainbowHappy.moveRight=true;  
     
 }
-if (RainbowHappy.moveRight==true){//move the rainbow happy across the screen
+
+if (RainbowHappy.moveRight==true){
     RainbowHappy.x+=2; 
 }
-if (RainbowHappy.alive==false){ //if you hit the rainbow happy
-    RainbowHappy.moveRight=false; //it stops moving
+
+if (RainbowHappy.alive==false){ 
+    RainbowHappy.moveRight=false; 
     RainbowHappy.x=-100;//resets to original position
     RainbowHappy.y=100; 
 }
+
 if (user.moveRight==true){
-    user.x+=user.speed; //move right
+    user.x+=user.speed; 
 }
+
 if (user.moveLeft==true){ 
-    user.x-=user.speed; //move left
+    user.x-=user.speed; 
 }
+
 //keeps player on board 
 if (user.x>940){
        user.x-=user.speed;
@@ -217,14 +231,18 @@ if (user.x>940){
 if (user.x<0){
      user.x+=user.speed;
 }
-if (user.injured==true){ //if player is hit by bomb
-     lives-=1; //take away one life
-     user.injured=false;//turn off injured images (player will flash red) 
+
+if (user.injured==true){ 
+     lives-=1; 
+     user.injured=false;// (player will flash red) 
      injuredImage=true;
 }
+
 if (injuredImage==true){
-    g.drawImage(injured, user.x, user.y, 50, 50, null); //draw injured image
+    g.drawImage(injured, user.x, user.y, 50, 50, null);
 }
+
+
 moveEnemy(); 
     for (Enemy army1 : army) {
         if (army1.alive == true) {
@@ -232,8 +250,10 @@ moveEnemy();
             g.drawImage(sadpic, army1.x, army1.y, 30, 30, null);
         }
     }
+
+
 if (lives<=0){ //you die
-    winStreak=0; //reset winstreak to zero
+    winStreak=0; 
     g.drawImage (RIP,user.x,user.y-50,100,100,null); //display death image
     for (Enemy army1 : army) {
         //stop army
@@ -262,9 +282,11 @@ if (lives<=0){ //you die
         g.drawString ("Win Streak: "+winStreak,450,130); //display buttons and winStreak
     }
 }
-if (score>=250){ // you win
+
+
+if (score>=250){ 
     if (winStreak==0){
-        winStreak=1; //add to winstreak if at zero
+        winStreak=1; 
     }
     for (Enemy army1 : army) {
         //stop army
@@ -307,38 +329,43 @@ if (score>=250){ // you win
 Toolkit.getDefaultToolkit().sync();
 g.dispose();
 }
-public void moveEnemy(){ //new method to move army
+
+
+
+public void moveEnemy(){ 
     for (Enemy army1 : army) {
         if (army1.moveLeft == true) {
-            army1.x -= armyspeed; //army shifts left
+            army1.x -= armyspeed; 
         }
         if (army1.moveRight == true) {
-            army1.x += armyspeed; //army shifts right
+            army1.x += armyspeed;
         }
     }
     for (Enemy army2 : army) {
         if (army2.x > BOARD_WIDTH) {
             for (Enemy army1 : army) {
-                army1.moveLeft = true; //when edge of screen hit change directions
+                army1.moveLeft = true; 
                 army1.moveRight = false;
-                army1.y += 5; //when army hits edge of screen move down
+                army1.y += 5; 
                 armyspeed+=0.002; //speed up at y component increases
             }
         }
         if (army2.x < 0) {
             for (Enemy army1 : army) {
-                army1.moveRight = true; //when edge of screen hit change directions
+                army1.moveRight = true; 
                 army1.moveLeft = false;
                 army1.y += 5;
                 armyspeed+=0.002; //speed up at y component increases
             }
         }
-        if (army2.y>500){ //if the army reaches the ground you die
+        if (army2.y>500){ 
             lives=0;
         }
     }
 }
-public void savescore() throws FileNotFoundException{ //sets up new file
+
+
+public void savescore() throws FileNotFoundException{
      FileOutputStream fos= new FileOutputStream("highscore.txt", true); //create file
      PrintWriter pw= new PrintWriter(fos);
      if (winStreak>=0){         //only if the winstreak exists
@@ -350,31 +377,35 @@ public void savescore() throws FileNotFoundException{ //sets up new file
     private void dispose() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
 private class TAdapter extends KeyAdapter {
 @Override
+
 public void keyReleased(KeyEvent e) {
      int key = e.getKeyCode();
      user.moveRight=false;
-     user.moveLeft=false;     //stop movement once key released
+     user.moveLeft=false; 
 }
 @Override
+
 public void keyPressed(KeyEvent e) {
-    int key = e.getKeyCode(); //find the key that was pressed
+    int key = e.getKeyCode(); 
         if(key==39 && lives>0){//when right arrow key is pressed
           user.moveRight=true; 
         }
         if (key==37 && lives>0){
           user.moveLeft=true; //when left arrow key is pressed
         }
-        if (key==32 && lives>0){
+        if (key==32 && lives>0){//space key pressed
           shooting.y=BOARD_HEIGHT-100;
-          shooting.x=user.x; //fire shot from user
-          shooting.fired=true;//when space key pressed fire shot
+          shooting.x=user.x; 
+          shooting.fired=true;
         }
 }   
 }
   
 @Override
+
 public void mousePressed(MouseEvent e) {
     int x = e.getX();
      int y = e.getY();
@@ -389,13 +420,15 @@ public void mouseEntered(MouseEvent e) {
 @Override
 public void mouseExited(MouseEvent e) {
 }
+
+
 @Override
 public void mouseClicked(MouseEvent e) {
    int x=e.getX();
    int y=e.getY();
    if (450<=x && x<=550 && 150<= y && y<=180 && (score==250 ||lives==0)){//if the game ends and they click replay
-       lives=3; //reset lives
-       if (score==250){ //reset score and keep track of wins
+       lives=3; 
+       if (score==250){ 
            score=0;   
            winStreak+=1; 
            double increase= winStreak/5; 
@@ -410,28 +443,29 @@ public void mouseClicked(MouseEvent e) {
        int EnemyX=45;
        int EnemyY=10; 
        for (int i=0; i<army.length; i++){ //reset each army member
-           army[i].alive=true;//set all of them to be visible again      
-           army[i].moveLeft=true; //set them to move left
+           army[i].alive=true;     
+           army[i].moveLeft=true; 
            army[i].x=EnemyX; 
-           army[i].y =EnemyY; //reset first row
-           EnemyX+=60; //creating row of enemy 60 units apart from each other
-           if (i==11){ //new row after 12 enemy sad faces
-              EnemyX=10; //set new enemy row so it wont overlap
-              EnemyY+=40; //move second row down
+           army[i].y =EnemyY;
+           EnemyX+=60; 
+           if (i==11){ 
+              EnemyX=10; 
+              EnemyY+=40; 
           }
        }
-       RainbowHappy.x=-100;//reset the rainbowhappy
+       RainbowHappy.x=-100;
        RainbowHappy.y=100;
        RainbowHappy.moveRight=false;
        RainbowHappy.alive=true; 
    }
+   
    if (450<=x && x<=550 && 250<= y && y<=280 && (score==250 || lives==0)){ //if game ends and they click exit
        try {
        savescore();//run save score to save winstrak value to file
        } catch (FileNotFoundException ex) {
            Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
        }
-       System.exit(1); //exit page
+       System.exit(1); 
    }
 }
 @Override
@@ -451,7 +485,7 @@ beforeTime = System.currentTimeMillis();
           System.currentTimeMillis()));
       }catch (InterruptedException e) {
         System.out.println(e);
-      }//end catch
-    }//end while loop
+      }
+    }
 }//end of run
 }//end of class
